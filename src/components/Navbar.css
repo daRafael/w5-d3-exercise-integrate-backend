@@ -1,0 +1,56 @@
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+  position: fixed;
+  width: 100%;
+}
+
+nav ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  gap: 40px;
+}
+
+nav ul a {
+  position: relative;
+}
+
+nav ul a::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #646cff;
+  transition: all 0.3s ease-in-out;
+}
+
+nav ul a::hover::before {
+  background-color: #535bf2;
+}
+
+nav ul a.active::before {
+  width: 100%;
+}
+
+nav .highlight {
+  background-color: #646cff;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+nav .highlight::before {
+  content: unset;
+}
+
+nav .highlight:hover {
+  background-color: #535bf2;
+  color: #fff;
+}

@@ -1,0 +1,12 @@
+.profile-wrapper {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile {
+  background-color: #1a1a1a;
+  border-radius: 20px;
+}

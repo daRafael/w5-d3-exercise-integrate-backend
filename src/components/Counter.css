@@ -1,0 +1,12 @@
+.counter {
+  margin: 40px 0;
+}
+
+.counter span {
+  font-size: 72px;
+  font-weight: bold;
+}
+
+.counter h3 {
+  margin: 0;
+}
