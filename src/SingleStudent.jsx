@@ -1,40 +1,38 @@
-import { useParams, Navigate, useSearchParams } from "react-router-dom";
 import "./SingleStudent.css";
+import { useEffect, useState } from "react";
+import { useParams, Navigate } from "react-router-dom";
+import { getStudentById } from "../lib";
 
 export default function SingleStudent({ students }) {
   const { studentId } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [foundStudent, setFoundStudent] = useState([]);
 
-  // find student using .find()
-  const student = students.find((student) => student.id === studentId);
+  useEffect(() => {
+    let student = students.find((student) => student._id === studentId);
 
-  // find student using .filter()
-  // const student = students.filter((student) => student.id === studentId)[0];
-
-  if (!student) {
-    return <Navigate to="/students" />;
-  }
-
-  const showAge = searchParams.get("showAge");
-  const showBootcamp = searchParams.get("showBootcamp");
-
-  // console.log("showAge", showAge);
-  // console.log("showBootcamp", showBootcamp);
+    if (student) setFoundStudent(student);
+    else
+      getStudentById(studentId).then((student) => {
+        if (!student) return <Navigate to="/students" />;
+        setFoundStudent(student);
+      });
+  }, []);
 
   return (
     <div className="profile-wrapper">
       <div className="profile card">
         <img
-          src={student.img}
-          alt={`${student.name} profile picture`}
+          src={foundStudent.img}
+          alt={`${foundStudent.name} profile picture`}
           width={300}
           height="auto"
           style={{ borderRadius: "50%" }}
         />
-        <h2>{student.name}</h2>
-        <p>{student.age} anos</p>
-        <p>{student.bootcamp}</p>
+        <h2>{foundStudent.name}</h2>
+        <p>{foundStudent.age} anos</p>
+        <p>{foundStudent.bootcamp}</p>
       </div>
     </div>
   );
 }
+

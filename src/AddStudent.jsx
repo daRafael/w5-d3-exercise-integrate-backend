@@ -6,7 +6,7 @@ import "./AddStudent.css";
 const defaultImg =
   "https://i.pinimg.com/736x/00/70/16/00701602b0eac0390b3107b9e2a665e0.jpg";
 
-export default function AddStudent({ createStudent }) {
+export default function AddStudent({ addStudent }) {
   const [name, setName] = useState("");
   const [imgURL, setImgURL] = useState("");
   const [age, setAge] = useState(0);
@@ -41,9 +41,8 @@ export default function AddStudent({ createStudent }) {
     }
 
     // generate id, if no image default image is used & add student to the list
-    const id = uuidv4();
     const img = imgURL || defaultImg;
-    createStudent({ id, name, img, age, bootcamp });
+    addStudent({ id, name, img, age, bootcamp });
 
     // clear form
     setName("");

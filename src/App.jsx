@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import studentsData from "./studentsData";
 import "./App.css";
 import Navbar from "./components/Navbar";
+
+import { getAllStudents, createStudent, deleteStudent, updateStudent } from "../lib";
 
 // Pages
 import Homepage from "./Homepage";
@@ -13,14 +15,34 @@ import UpdateStudent from "./UpdateStudent";
 import Error from "./Error";
 
 function App() {
-  const [students, setStudents] = useState(studentsData);
+  const [students, setStudents] = useState([]);
 
-  const createStudent = (student) => {
-    setStudents([...students, student]);
+  useEffect(() => {
+    getAllStudents().then((data) => {
+      setStudents(data);
+    });
+  }, []);
+
+  const addStudent = (student) => {
+    createStudent(student).then((studentData) => {
+      setStudents([...students, studentData]);
+    });
+  };
+
+  const editStudent = (student) => {
+    updateStudent(student).then((studentData) => {
+      setStudents(
+        students.map((student) =>
+          student._id === studentData._id ? studentData : student
+        )
+      );
+    });
   };
 
   const deleteItem = (id) => {
-    setStudents(students.filter((student) => student.id !== id));
+    deleteStudent(id).then((data) => {
+      setStudents(students.filter((student) => student._id !== data._id));
+    });
   };
 
   return (
@@ -34,7 +56,7 @@ function App() {
         />
         <Route
           path="/students/new"
-          element={<AddStudent createStudent={createStudent} />}
+          element={<AddStudent addStudent={addStudent} />}
         />
         <Route
           path="/students/:studentId"
@@ -43,7 +65,7 @@ function App() {
         <Route
           path="/students/:studentId/edit"
           element={
-            <UpdateStudent students={students} setStudents={setStudents} />
+            <UpdateStudent students={students} editStudent={editStudent} />
           }
         />
         <Route path="*" element={<Error />} />

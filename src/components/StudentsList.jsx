@@ -27,7 +27,7 @@ export default function StudentsList({ students, deleteItem }) {
           if (category === "" || student.bootcamp === category) {
             return (
               <StudentCard
-                key={student.id}
+                key={student._id}
                 student={student}
                 deleteItem={deleteItem}
               />

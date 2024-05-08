@@ -1,56 +1,52 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, Navigate } from "react-router-dom";
+import { getStudentById } from "../lib";
 
-export default function UpdateStudent({ students, setStudents }) {
+export default function UpdateStudent({ students, editStudent }) {
   const { studentId } = useParams();
-
-  // find student using .find()
-  const student = students.find((student) => student.id === studentId);
-  // if student is not found, redirect to students list
-  if (!student) return <Navigate to="/students" />;
-
-  const [name, setName] = useState(student.name);
-  const [imgURL, setImgURL] = useState(student.img);
-  const [age, setAge] = useState(student.age);
-  const [bootcamp, setBootcamp] = useState(student.bootcamp);
+  const [foundStudent, setFoundStudent] = useState([]);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    let student = students.find((student) => student._id === studentId);
+
+    if (student) setFoundStudent(student);
+    else
+      getStudentById(studentId).then((student) => {
+        if (!student) return <Navigate to="/students" />;
+        setFoundStudent(student);
+      });
+  }, []);
+
   const handleNameChange = (e) => {
-    setName(e.target.value);
+    setFoundStudent({ ...foundStudent, name: e.target.value });
   };
 
   const handleImgChange = (e) => {
-    setImgURL(e.target.value);
+    setFoundStudent({ ...foundStudent, imgURL: e.target.value });
   };
 
   const handleAgeChange = (e) => {
     const value = Number(e.target.value) || "";
     if (value < 0) return;
-    setAge(value);
+    setFoundStudent({ ...foundStudent, age: value });
   };
 
   const handleBootcampChange = (e) => {
-    setBootcamp(e.target.value);
+    setFoundStudent({ ...foundStudent, bootcamp: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Check if all fields are filled
-    if (!name || !age || !bootcamp) {
+    if (!foundStudent.name || !foundStudent.age || !foundStudent.bootcamp) {
       alert("Please fill in all fields");
       return;
     }
 
-    const updatedStudents = students.map((student) => {
-      if (student.id === studentId) {
-        return { id: studentId, name, img: imgURL, age, bootcamp };
-      }
-      return student;
-    });
-
     // update student in the list
-    setStudents(updatedStudents);
+    editStudent(foundStudent);
 
     // redirect to students list
     navigate("/students");
@@ -58,14 +54,14 @@ export default function UpdateStudent({ students, setStudents }) {
 
   return (
     <div>
-      <h1>Edit Student</h1>
+      <h1>Add Student</h1>
       <form>
         <div className="input-wrapper">
           <label>Name:</label>
           <input
             type="text"
             name="name"
-            value={name}
+            value={foundStudent.name || ""}
             onChange={handleNameChange}
           />
         </div>
@@ -74,7 +70,7 @@ export default function UpdateStudent({ students, setStudents }) {
           <input
             type="text"
             name="imgURL"
-            value={imgURL}
+            value={foundStudent.imgURL || ""}
             onChange={handleImgChange}
           />
         </div>
@@ -83,7 +79,7 @@ export default function UpdateStudent({ students, setStudents }) {
           <input
             type="number"
             name="age"
-            value={age}
+            value={foundStudent.age || 0}
             onChange={handleAgeChange}
           />
         </div>
@@ -92,7 +88,7 @@ export default function UpdateStudent({ students, setStudents }) {
           <div className="select-wrapper">
             <select
               name="bootcamp"
-              value={bootcamp}
+              value={foundStudent.bootcamp || ""}
               onChange={handleBootcampChange}
             >
               <option value="">Select a bootcamp</option>
